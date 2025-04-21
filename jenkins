@@ -1,16 +1,22 @@
 pipeline {
     agent any
 
+    // Ensure Jenkins picks up the Git installation named 'Default'
+    tools {
+        git 'Default'
+    }
+
     environment {
-        // Jenkins credentials ID that stores 'admin'/'admin' for Tomcat
+        // Jenkins credentials ID for Tomcat admin/admin
         TOMCAT_CREDENTIALS = credentials('tomcat-admin-creds')
-        WAR_NAME = "myapp.war"
+        WAR_NAME = 'myapp.war'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/sakthi0431/mypro.git'
+                // Use the configured Git tool
+                git url: 'https://github.com/sakthi0431/mypro.git', tool: 'Default'
             }
         }
 
@@ -28,7 +34,7 @@ pipeline {
 
         stage('Deploy to Tomcat') {
             steps {
-                // Ensure Tomcat manager is accessible on port 6500
+                // Deploy via Tomcat manager running on port 6500
                 deploy adapters: [tomcat9(
                     credentialsId: "${TOMCAT_CREDENTIALS}",
                     path: '',
